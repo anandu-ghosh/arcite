@@ -37,34 +37,39 @@
                   <thead>
                   <tr>
                     <th>Slno</th>
-                    <th>Place</th>
+                    <th>Name</th>
                     <th>Address</th>
                     <th>Email</th>
                     <th>Phone</th>
+                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
+                  @php ($x=1)
+                  @foreach($institutions as $institution)
                   <tr>
-                    <td>Trident</td>
-                    <td>Trident</td>
-                    <td>Trident</td>
-                    <td>Trident</td>
-                    <td>Internet
-                      Explorer 4.0
+                    <td>{{$x++}}</td>
+                    <td>{{$institution->name}}</td>
+                    <td>{{$institution->address}}</td>
+                    <td>{{$institution->email}}</td>
+                    <td>{{$institution->phone}}</td>
+                    <td style="width:14%">
+                    <a style="margin-right:8px;" class=" float-left btn btn-primary" href="">
+                    <i class="fas fa-eye"></i> 
+                    </a>
+                    <a style="margin-right:8px;" class="float-left btn btn-warning" href="">
+                    <i class="fas fa-edit"></i> 
+                    </a>
+                    <form class="float-left"  action="" method="post">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger" >
+                        <i class="fas fa-trash"></i> 
+                      </button>
+                    </form>
                     </td>
-                    
                   </tr>
-                  <tr>
-                    <td>Trident</td>
-                    <td>Trident</td>
-                    <td>Trident</td>
-                    <td>Trident</td>
-                    <td>Internet
-                      Explorer 5.0
-                    </td>
-                    
-                  </tr>
-                 
+                  @endforeach                                   
                   </tbody>
                 </table>
                 </div>

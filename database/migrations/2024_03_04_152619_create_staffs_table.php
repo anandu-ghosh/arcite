@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('institution', function (Blueprint $table) {
+        Schema::create('staffs', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('institution_id')->references('id')->on('institutions');
             $table->string('name');
             $table->string('address');
             $table->string('email');
@@ -20,9 +22,7 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->bigInteger('created_by');
             $table->bigInteger('updated_by');
-            $table->softDeletes();
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamps();
         });
     }
 
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('institution');
+        Schema::dropIfExists('staffs');
     }
 };

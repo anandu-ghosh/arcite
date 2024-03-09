@@ -13,10 +13,18 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{route('student.index')}}" class="nav-link">
               <i class="nav-icon fas fa-ellipsis-h"></i>
               <p>
                 Student
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{URL::to('staff')}}" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                Staff
               </p>
             </a>
           </li>
@@ -40,6 +48,18 @@
                 <a href="{{route('institution.index')}}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Institution</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('course.index')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Course</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('batch.index')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Batch</p>
                 </a>
               </li>
              

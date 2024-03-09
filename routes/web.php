@@ -2,9 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BatchController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\InstitutionController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\StudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,4 +27,12 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('home', HomeController::class);
     Route::resource('role', RoleController::class);
     Route::get('institution', [InstitutionController::class,'index'])->name('institution.index');
+    Route::resource('staff',StaffController::class);
+    Route::resource('course',CourseController::class);
+    Route::resource('batch',BatchController::class);
+    Route::resource('student',StudentController::class);
+    Route::get('allocate_batch/{id}',[StudentController::class,'allocate'])->name('student.allocate');
+    Route::put('allocate_batch/{id}',[StudentController::class,'batched'])->name('student.batched');
+
+    Route::get('log-out',[AuthController::class,'logout'])->name('logout');
 });    

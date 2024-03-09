@@ -40,7 +40,7 @@ class AuthController extends Controller
    
         $data = $this->authRepository->login($request->validated());
         if ($data) {
-            return redirect()->route('home.index')->with('success', 'Login Successfully');
+            return redirect()->route('home.index')->with('success', 'Login Successfully'); 
         } else {
             return redirect()->route('login.index')->with('error', 'Invalid Credentials');
         }
@@ -76,5 +76,11 @@ class AuthController extends Controller
     public function destroy(string $id)
     {
         //
+       
+    }
+
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('login');
     }
 }

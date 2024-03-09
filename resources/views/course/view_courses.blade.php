@@ -1,5 +1,5 @@
 @extends('layout.layout')
-@section('title', 'Roles')
+@section('title', 'Institution')
 @section('content')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -10,12 +10,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Roles</h1>
+            <h1 class="m-0">Course</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home.index')}}">Home</a></li>
-              <li class="breadcrumb-item active">Roles</li>
+              <li class="breadcrumb-item active">Course</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -30,32 +30,33 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Roles</h3>
+                <h3 class="card-title">Course</h3>
+                  
+                <a class="btn btn-primary float-right" href="{{route('course.create')}}" >Add Course</a>
               </div>
                 <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                   <thead>
                   <tr>
                     <th>Slno</th>
-                    <th>Roles</th>
+                    <th>Course Name</th>
                     <td>Action</td>
                   </tr>
                   </thead>
                   <tbody>
                   @php($x=1)
-                  @foreach($roles as $role)
+                  @foreach($courses as $course)
                   <tr>
-                  <td>{{$x++}}</td>
-                  <td>{{$role->role_name}}</td>
-                  @endforeach
-                  <td>
-                    <a style="margin-right:8px;" class=" float-left btn btn-primary" href="">
+                    <td>{{$x++}}</td>
+                    <td>{{$course->name}}</td>
+                    <td>
+                    <a style="margin-right:8px;" class=" float-left btn btn-primary" href="{{route('course.show',$course->id)}}">
                     <i class="fas fa-eye"></i> 
                     </a>
-                    <a style="margin-right:8px;" class="float-left btn btn-warning" href="">
+                    <a style="margin-right:8px;" class="float-left btn btn-warning" href="{{route('course.edit',$course->id)}}">
                     <i class="fas fa-edit"></i> 
                     </a>
-                    <form class="float-left"  action="" method="post">
+                    <form action="{{route('course.destroy',$course->id)}}" class="float-left" method="post">
                       @csrf
                       @method('DELETE')
                       <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger" >
@@ -63,7 +64,9 @@
                       </button>
                     </form>
                     </td>
-                </tr>
+                    
+                  </tr>
+                  @endforeach
                   </tbody>
                 </table>
                 </div>
