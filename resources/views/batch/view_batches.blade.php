@@ -40,7 +40,9 @@
                   <tr>
                     <th>Slno</th>
                     <th>Batch Name</th>
-                    <th>Course Name</th>
+                    <th>Course</th>
+                    <th>Department</th>
+                    <th>Institution</th>
                     <th>Whattsapp link</th>
                     <td>Action</td>
                   </tr>
@@ -51,11 +53,9 @@
                  <tr>
                     <td>{{$x++}}</td>
                     <td>{{$batch->name}}</td>
-                    <td>@foreach($courses as $course)
-                        @if($batch->course_id == $course->id)
-                        {{$course->name}}
-                        @endif
-                        @endforeach</td>
+                    <td>{{$batch->course->name}}</td>
+                    <td>{{$batch->department->name}}</td>
+                    <td>{{$batch->institution->name}}</td>
                     <td>{{$batch->whattsapp_link}}</td>
                     <td>
                     <a style="margin-right:8px;" class=" float-left btn btn-primary" href="{{route('batch.show',$batch->id)}}">

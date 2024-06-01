@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Department;
 use App\Models\Institution;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
@@ -27,7 +29,8 @@ class CourseController extends Controller
         //
         
         $institutions = Institution::all();
-        return view('course.add_course',compact('institutions'));
+        $departments = Department::all();
+        return view('course.add_course',compact('institutions','departments'));
     }
 
     /**
@@ -36,17 +39,30 @@ class CourseController extends Controller
     public function store(Request $request)
     {
         //
-        $course = new Course;
-        $course->institution_id = $request->institution;
-        $course->name = $request->name;
-        $course->status = 1;
-        $course->created_by = auth()->user()->id;
-        if($course->save()){
-            return redirect()->route('course.create')->with('status','Course Successfully Added');
+
+            $validator = Validator::make($request->all(), [
+            'institution' => 'required|max:255',
+            'department' => 'required|max:255',
+            'name' => 'required|max:255',
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
         }
         else{
-            return redirect()->route('course.create')->with('status','failed');
+            Course::create([
+                'name' => $request->name,
+                'institution_id' => $request->institution,
+                'department_id' => $request->department,
+                'status' => 1,
+                'created_by' => auth()->user()->id
+                
+            ]);
+            return redirect()->route('course.index')->with('success', 'Course inserted successfully!');
         }
+
     }
 
     /**
@@ -57,7 +73,8 @@ class CourseController extends Controller
         //
         $course = Course::find($id);
         $institutions = Institution::all();
-        return view('course.show_course',compact('course','institutions'));
+        $departments = Department::all();
+        return view('course.show_course',compact('course','institutions','departments'));
     }
 
     /**
@@ -68,7 +85,8 @@ class CourseController extends Controller
         //
         $course = Course::find($id);
         $institutions = Institution::all();
-        return view('course.edit_course',compact('course','institutions'));
+        $departments = Department::where('institution_id',$course->institution_id)->get();
+        return view('course.edit_course',compact('course','institutions','departments'));
     }
 
     /**
@@ -80,13 +98,14 @@ class CourseController extends Controller
         $course = Course::find($id);
         $course->name = $request->name;
         $course->institution_id = $request->institution;
+        $course->department_id = $request->department;
         $course->status = 1;
         $course->updated_by = auth()->user()->id;
         if($course->update()){
-            return redirect()->route('course.index')->with('status','Course Successfully Updated');
+            return redirect()->route('course.index')->with('success','Course Successfully Updated');
         }
         else{
-            return redirect()->route('course.index')->with('status','failed');
+            return redirect()->route('course.index')->with('error','failed');
         }
     }
 
@@ -103,5 +122,22 @@ class CourseController extends Controller
         else{
             return redirect()->back()->with('status','Failed to Delete');
         }
+    }
+
+    public function courses(Request $request){
+        $institutionId = $request->input('institution_id');
+        $departmentId = $request->input('department_id');
+        // $courses = Course::where('institution_id',$institutionId)
+        //                       ->where('department_id',$departmentId)
+        //                       ->get();
+        $coursesQuery = Course::query();   
+        if ($institutionId) {
+            $coursesQuery->where('institution_id', $institutionId);          
+        }
+        if ($departmentId) {
+            $coursesQuery->where('department_id', $departmentId);
+        }
+        $courses = $coursesQuery->get();
+        return response()->json($courses);
     }
 }

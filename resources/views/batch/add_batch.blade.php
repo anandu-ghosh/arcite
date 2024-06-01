@@ -39,14 +39,26 @@
                 @csrf
                 <div class="card-body">
                 <div class="form-group">
-                    <label for="exampleInputEmail1">Course</label>
-                    <select name="course" class="form-control" id="exampleInputEmail1" required >
-                      <option value=""> --Select course-- </option>
-                      @foreach($courses as $course)
-                      <option value="{{$course->id}}">{{$course->name}}</option>
-                      @endforeach
+                    <label for="exampleInputPassword1">Select Institution</label>
+                    <select name="institution" id="institution" class="form-control" required>
+                          <option value=""> --select--</option>
+                          @foreach($institutions as $institution)
+                          <option value="{{$institution->id}}">{{$institution->name}}</option>
+                          @endforeach
                     </select>
-                    @error('name')
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Select Department</label>
+                    <select name="department" id="department" class="form-control" required>
+                          <option value=""> --select--</option>
+                    </select>
+                  </div> 
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Course</label>
+                    <select name="course" class="form-control" id="course" required >
+                      <option value=""> --Select -- </option>
+                    </select>
+                    @error('course')
                     <span style="color:red;font-weight:bold">{{$message}}</span>
                     @enderror
                   </div>
@@ -113,6 +125,75 @@
       "responsive": true,
     });
   });
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('#institution').change(function(){
+      var institutionId = $(this).val();
+      var csrfToken = $('meta[name="csrf-token"]').attr('content');
+      $.ajax({
+          type: 'POST',
+          url: '/departments',
+          data: {
+                institution_id: institutionId
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken // Include CSRF token in headers
+            },  
+          success: function(response){
+          $('#department').empty();
+          $.each(response, function(index, department){
+          $('#department').append('<option value="' + department.id + '">' + department.name + '</option>');
+          });
+          var departmentValue = $('#department').val();
+          if(departmentValue){
+                  
+                        populateCourses(institutionId,departmentValue,csrfToken);
+                    } else {
+                     
+                        $('#course').html('<option value="">Select Department First</option>');
+                    }
+          }
+      });
+  });
+
+  function populateCourses(institutionId,departmentID,csrfToken){
+
+    $.ajax({
+            type:'POST',
+            url:'/courses',
+            data: {
+              institution_id: institutionId,department_id:departmentID,
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success:function(response){
+                $('#course').html(response);
+                $('#course').empty();
+                  $.each(response, function(index, course){
+                  $('#course').append('<option value="' + course.id + '">' + course.name + '</option>');
+                  });
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        }); 
+  }
+
+  $('#department').change(function(){
+        var institutionId = $('#institution').val();
+        var departmentID = $(this).val();
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        if(departmentID){
+            populateCourses(institutionId, departmentID,csrfToken);
+        } else {
+            $('#course').html('<option value="">Select Department First</option>');
+        }
+  })
+
+  })
 </script>
 @endpush    
 @endsection

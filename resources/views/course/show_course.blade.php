@@ -48,6 +48,15 @@
                     </select>
                   </div>
                   <div class="form-group">
+                    <label for="exampleInputPassword1">Select Department</label>
+                    <select name="department" id="department" class="form-control" required>
+                    @foreach($departments as $department)
+                    <option value="{{$department->id}}" @if($department->id == $course->department_id) selected @endif > 
+                            {{$department->name}} </option>
+                    @endforeach
+                    </select>
+                  </div>
+                  <div class="form-group">
                     <label for="exampleInputEmail1">Course Name</label>
                     <input type="text"  value="{{$course->name}}" name="name" class="form-control" id="exampleInputEmail1" placeholder="Enter name" required>
                   </div>                                             

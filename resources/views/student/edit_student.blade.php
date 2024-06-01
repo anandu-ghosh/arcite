@@ -56,9 +56,7 @@
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Address</label>
-                    <textarea class="form-control" name="address" rows="3" placeholder="Enter ..." required>
-                        {{$student->address}}
-                    </textarea>
+                    <textarea class="form-control" name="address" rows="3" placeholder="Enter ..." required>{{$student->address}}</textarea>                                    
                   </div>
                   <div class="form-group">
                     <label for="exampleInputEmail1">Mobile</label>
@@ -76,39 +74,43 @@
                         <option value="PLUSTWO">PLUSTWO</option>
                     </select>
                   </div>
-
+                  
                   <div class="form-group">
                     <label for="exampleInputEmail1">Do you proceed for further enquiry?</label>
                     <select name="status"  class="form-control" id="status" required>
                         <option value="">-- Select --</option>
-                        <option value=1>Yes</option>
-                        <option value=0 selected> No</option>
+                        <option value=1 @if($student->status == "enquiry") selected @endif>Yes</option>
+                        <option value=0 @if($student->status == "visit") selected @endif> No</option>
                     </select>   
                     </div>
-                    <div class="enquiry" id="enquiry" style="display:none">
+                    <div class="enq" id="enq" @if($student->status == "visit") style="display:none"; @endif>
                   <div class="form-group">
                     <label for="exampleInputEmail1">Aadhar number</label>
-                    <input type="text" name="aadhar_number" class="form-control" id="exampleInputEmail1" >
+                    <input type="text" value="{{$student->aadhar_number}}" name="aadhar_number" class="form-control" id="exampleInputEmail1" >
                     </div> 
                   
                     <div class="form-group">
                     <label for="exampleInputEmail1">Upload Aadhar</label>
-                    <input type="file" name="aadhar_photo" class="form-control" id="exampleInputEmail1" >
+                    <input id="adhar" type="file" name="aadhar_photo" class="form-control"  >
+                    <img id="adr"  src="{{asset('uploads/images/aadhar/'.$student->aadhar_photo)}}" style="width:85px;height:85px;padding:5px" alt="Adhar">
                     </div> 
 
                     <div class="form-group">
                     <label for="exampleInputEmail1">Upload Photo</label>
-                    <input type="file" name="student_photo" class="form-control" id="exampleInputEmail1" >
+                    <input type="file" name="student_photo" class="form-control" id="photo" >
+                    <img id="pic" src="{{asset('uploads/images/students/'.$student->student_photo)}}" style="width:85px;height:85px;padding:5px" alt="Photo">
                     </div> 
 
                     <div class="form-group">
                     <label for="exampleInputEmail1">Upload SSLC Certtificate</label>
-                    <input type="file" name="sslc_photo" class="form-control" id="exampleInputEmail1" >
+                    <input id="sslc" type="file" name="sslc_photo" class="form-control" >
+                    <img id="tenth" src="{{asset('uploads/images/sslc/'.$student->sslc_certificate)}}" style="width:85px;height:85px;padding:5px" alt="SSLC">
                     </div> 
 
                     <div class="form-group">
                     <label for="exampleInputEmail1">Upload PLUSTWO Certtificate</label>
-                    <input type="file" name="plustwo_photo" class="form-control" id="exampleInputEmail1" >
+                    <input id="plustwo" type="file" name="plustwo_photo" class="form-control"  >
+                    <img id="twelth" src="{{asset('uploads/images/plustwo/'.$student->plustwo_certificate)}}" style="width:85px;height:85px;padding:5px" alt="Plusteo">
                     </div>
 
                     <div class="form-group">
@@ -116,7 +118,7 @@
                     <select name="course" class="form-control" id="exampleInputEmail1" >
                         <option value="">-- Select --</option>
                         @foreach($courses as $course)
-                        <option value="{{$course->id}}" >{{$course->name}}</option>
+                        <option value="{{$course->id}}" @if($student->course_id == $course->id) selected @endif >{{$course->name}}</option>
                         @endforeach
                     </select>
                   </div>
@@ -179,13 +181,43 @@
 $("#status").change(function(){
    let status = $("#status").val();
    if(status == 1){
-    $("#enquiry").css("display","block");
+    $("#enq").css("display","block");
    }
    else{
-    $("#enquiry").css("display","none");
+    $("#enq").css("display","none");
    }
   
    })
+</script>
+
+<script>
+photo.onchange = evt => {
+  const [file] = photo.files
+  if (file) {
+    pic.src = URL.createObjectURL(file)
+  }
+}
+
+adhar.onchange = evt => {
+  const [file] = adhar.files
+  if (file) {
+    adr.src = URL.createObjectURL(file)
+  }
+}
+
+sslc.onchange = evt => {
+  const [file] = sslc.files
+  if (file) {
+    tenth.src = URL.createObjectURL(file)
+  }
+}
+
+plustwo.onchange = evt => {
+  const [file] = plustwo.files
+  if (file) {
+    twelth.src = URL.createObjectURL(file)
+  }
+}
 </script>
 
 @endpush    

@@ -82,42 +82,28 @@
                         <option value=0 @if($student->status == "visit") selected @endif>No</option>
                     </select>   
                     </div>
-                    <div class="enquiry" id="enquiry" @if($student->status == "visit") style="display:none"; @endif>
-                  <div class="form-group">
+
+                    <div class="form-group">
                     <label for="exampleInputEmail1">Aadhar number</label>
                     <input type="text" value="{{$student->aadhar_number}}" name="aadhar_number" class="form-control" id="exampleInputEmail1" >
                     </div> 
-                  
-                    <div class="form-group">
-                    <label for="exampleInputEmail1">Upload Aadhar</label>
-                    <img src="{{asset('uploads/images/aadhar/'.$student->aadhar_photo)}}" style="width:100px;height:90px" alt="">
-                    </div> 
 
-                    <div class="form-group">
-                    <label for="exampleInputEmail1">Upload Photo</label>
-                    <img src="{{asset('uploads/images/students/'.$student->student_photo)}}" style="width:100px;height:90px" alt="">
-                    </div> 
-
-                    <div class="form-group">
-                    <label for="exampleInputEmail1"> SSLC Certtificate</label>
-                    <img src="{{asset('uploads/images/sslc/'.$student->sslc_certificate)}}" style="width:100px;height:90px" alt="">
-                    </div> 
-
-                    <div class="form-group">
-                    <label for="exampleInputEmail1"> PLUSTWO Certtificate</label>
-                    <img src="{{asset('uploads/images/plustwo/'.$student->plustwo_certificate)}}" style="width:100px;height:90px" alt="">
+                    <div class="enquiry" id="enquiry" @if($student->status == "visit") style="display:none"; @endif>
+                      <table id="example1" class="table table-bordered table-striped">
+                        <tr>
+                          <th>Aadhar</th>
+                          <th>Photo</th>
+                          <th>SSlC Certificate</th>
+                          <th>Plus Two Certificate</th>
+                        </tr>
+                        <tr>
+                          <td><img src="{{asset('uploads/images/aadhar/'.$student->aadhar_photo)}}" style="width:90px;height:85px;" alt=""></td>
+                          <td><img src="{{asset('uploads/images/students/'.$student->student_photo)}}" style="width:90px;height:85px;" alt=""></td>
+                          <td><img src="{{asset('uploads/images/sslc/'.$student->sslc_certificate)}}" style="width:90px;height:85px;" alt=""></td>
+                          <td><img src="{{asset('uploads/images/plustwo/'.$student->plustwo_certificate)}}" style="width:90px;height:85px;" alt=""></td>
+                        </tr>
+                      </table>
                     </div>
-
-                    <div class="form-group">
-                    <label for="exampleInputEmail1">Select Course</label>
-                    <select name="course"  class="form-control" id="exampleInputEmail1" >
-                        <option value="">-- Select --</option>
-                        @foreach($courses as $course)
-                        <option value="{{$course->id}}" @if($course->id == $student->course_id) selected @endif >{{$course->name}}</option>
-                        @endforeach
-                    </select>
-                  </div>
-                 </div>
                 </div>
 
                 <!-- /.card-body -->

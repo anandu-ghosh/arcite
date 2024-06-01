@@ -7,6 +7,7 @@ use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class StaffController extends Controller
 {
@@ -51,7 +52,8 @@ class StaffController extends Controller
         $user->email = $request->email;
         $password = "";
         $password = $request->name.substr($request->mobile , -5);
-        $user->password = bcrypt($password);
+        $user->password = $password;
+        $user->remember_token = Str::random(10);
         $user->email_verified_at = now();
        
         if($user->save()){
@@ -62,7 +64,8 @@ class StaffController extends Controller
             $staff->address = $request->address;
             $staff->email = $request->email;
             $staff->phone = $request->mobile;
-            $staff->status = 1;
+            $staff->status = "active";
+            
             $staff->created_by = auth()->user()->id;
             if($staff->save()){
                 return redirect()->route('staff.create')->with('status','Staff Successfully Added');

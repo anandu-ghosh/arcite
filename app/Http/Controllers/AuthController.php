@@ -39,6 +39,7 @@ class AuthController extends Controller
     {
    
         $data = $this->authRepository->login($request->validated());
+        
         if ($data) {
             return redirect()->route('home.index')->with('success', 'Login Successfully'); 
         } else {

@@ -38,7 +38,27 @@
               <form action="{{route('batch.store')}}" method="POST">
                 @csrf
                 <div class="card-body">
-                
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Institution</label>
+                    <select name="institution" id="institution" class="form-control" required>
+                          <option value="">{{$batch->institution->name}}</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Select Department</label>
+                    <select name="department" id="department" class="form-control" required>
+                    <option value="">{{$batch->department->name}}</option>
+                    </select>
+                  </div> 
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Course</label>
+                    <select name="course" class="form-control" id="course" required >
+                    <option value="">{{$batch->course->name}}</option>
+                    </select>
+                    @error('course')
+                    <span style="color:red;font-weight:bold">{{$message}}</span>
+                    @enderror
+                  </div>
                   <div class="form-group">
                     <label for="exampleInputEmail1">Name</label>
                     <input type="text" name="name" value="{{$batch->name}}" class="form-control" id="exampleInputEmail1" placeholder="Enter batch name" required >

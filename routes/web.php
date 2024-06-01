@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\InstitutionController;
@@ -29,10 +30,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('institution', [InstitutionController::class,'index'])->name('institution.index');
     Route::resource('staff',StaffController::class);
     Route::resource('course',CourseController::class);
+    Route::post('/courses',[CourseController::class,'courses'])->name('courses');
     Route::resource('batch',BatchController::class);
     Route::resource('student',StudentController::class);
     Route::get('allocate_batch/{id}',[StudentController::class,'allocate'])->name('student.allocate');
-    Route::put('allocate_batch/{id}',[StudentController::class,'batched'])->name('student.batched');
-
+    Route::post('allocate_batch',[StudentController::class,'batched'])->name('student.batched');
+    Route::post('find-batch',[StudentController::class,'findBatch'])->name('student.findBatch');
     Route::get('log-out',[AuthController::class,'logout'])->name('logout');
+
+    Route::resource('department',DepartmentController::class);
+    Route::post('/departments',[DepartmentController::class,'departments'])->name('departments');
+
+    
 });    

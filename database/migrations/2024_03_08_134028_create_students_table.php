@@ -14,20 +14,33 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('firstname');
+            $table->string('middlename');
             $table->string('lastname');
-            $table->longText('address');
+            $table->date('birthdate');
+            $table->string('gender');
             $table->string('mobile');
-            $table->string('email');
+            $table->string('telephone');
+            $table->string('email')->unique();
+
             $table->string('qualification');
-            
+            $table->string('guardianname');
+            $table->string('relationshiptoguardian');
+            $table->string('guardiantelephone');
+            $table->longText('address');
+            $table->string('state');
+            $table->string('city');
+            $table->string('zipcode');
             $table->enum('status', ['visit', 'enquiry','allocated'])->default('visit');
 
+            $table->longText('coursesopted');
+            $table->longText('references');
+            $table->longText('comments');
+            
             $table->longText('aadhar_number')->nullable();
             $table->longText('aadhar_photo')->nullable();
             $table->longText('student_photo')->nullable();
             $table->longText('sslc_certificate')->nullable();
             $table->longText('plustwo_certificate')->nullable();
-            $table->foreignId('course_id')->references('id')->on('courses')->nullable();
             $table->integer('created_by')->nullable();
             $table->integer('updated_by')->nullable();
 

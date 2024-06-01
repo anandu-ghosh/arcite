@@ -41,11 +41,20 @@
                 <div class="card-body">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Select Institution</label>
-                    <select name="institution" class="form-control" required>
+                    <select name="institution" id="institution" class="form-control" required>
                           <option value=""> --select--
                           @foreach($institutions as $institution)
                           <option value="{{$institution->id}}" @if($institution->id == $course->institution_id) selected @endif  > 
                             {{$institution->name}}</option>
+                          @endforeach
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Select Department</label>
+                    <select name="department" id="department" class="form-control" required>
+                          <option value=""> --select--</option>
+                          @foreach($departments as $department)
+                          <option value="{{$department->id}}" @if($department->id == $course->department_id) selected @endif >{{$department->name}}</option>
                           @endforeach
                     </select>
                   </div>
@@ -106,6 +115,33 @@
     });
   });
 </script>
+<script>
+  $(document).ready(function() {
+  $('#institution').change(function(){
+      var institutionId = $(this).val();
+      var csrfToken = $('meta[name="csrf-token"]').attr('content');
+      $.ajax({
+          type: 'POST',
+          url: '/departments',
+          data: {
+                institution_id: institutionId
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken // Include CSRF token in headers
+            },  
+          success: function(response) {
+          $('#department').empty();
+          $.each(response, function(index, department){
+          $('#department').append('<option value="' + department.id + '">' + department.name + '</option>');
+          });
+          }
+      });
+  });
+
+
+  });
+
+  </script>
 @endpush    
 @endsection
 

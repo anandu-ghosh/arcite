@@ -1,11 +1,7 @@
 @extends('layout.layout')
 @section('title', 'Institution')
 @section('content')
-@push('styles')
-<link rel="stylesheet" href="{{ asset('dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
-@endpush
+@include('layout.datatable.css')
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -40,7 +36,7 @@
                 <div class="card-body">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Select Institution</label>
-                    <select name="institution" class="form-control" required>
+                    <select name="institution" id="institution" class="form-control" required>
                           <option value=""> --select--
                           @foreach($institutions as $institution)
                           <option value="{{$institution->id}}">{{$institution->name}}</option>
@@ -48,8 +44,17 @@
                     </select>
                   </div>
                   <div class="form-group">
+                    <label for="exampleInputPassword1">Select Department</label>
+                    <select name="department" id="department" class="form-control" required>
+                          <option value=""> --select--</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
                     <label for="exampleInputEmail1">Course Name</label>
                     <input type="text" name="name" class="form-control" id="exampleInputEmail1" placeholder="Enter name" required>
+                    @if ($errors->has('name'))
+                    <div class="error">{{ $errors->first('name') }}</div>
+                    @endif
                   </div>                                             
                 
                 </div>
@@ -73,38 +78,33 @@
         </div>
     </div>  
     </section>
-@push('scripts')
-<script src="{{ asset('dashboard/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/jszip/jszip.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/pdfmake/pdfmake.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/pdfmake/vfs_fonts.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-
-<script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["pdf", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
+    <script src="{{ asset('dashboard/plugins/jquery/jquery.min.js') }}"></script>
+  <script>
+  $(document).ready(function(){
+  $('#institution').change(function(){
+      var institutionId = $(this).val();
+      var csrfToken = $('meta[name="csrf-token"]').attr('content');
+      $.ajax({
+          type: 'POST',
+          url: '/departments',
+          data: {
+                institution_id: institutionId
+            },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken // Include CSRF token in headers
+            },  
+          success: function(response){
+          $('#department').empty();
+          $.each(response, function(index, department){
+          $('#department').append('<option value="' + department.id + '">' + department.name + '</option>');
+          });
+          }
+      });
   });
-</script>
-@endpush    
+  });
+  </script>
+
+@include('layout.datatable.js')  
 @endsection
 
  

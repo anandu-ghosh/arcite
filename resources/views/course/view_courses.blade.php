@@ -40,6 +40,8 @@
                   <tr>
                     <th>Slno</th>
                     <th>Course Name</th>
+                    <th>Department</th>
+                    <th>Institution</th>
                     <td>Action</td>
                   </tr>
                   </thead>
@@ -49,6 +51,8 @@
                   <tr>
                     <td>{{$x++}}</td>
                     <td>{{$course->name}}</td>
+                    <td>{{$course->department->name}}</td>
+                    <td>{{$course->institution->name}}</td>
                     <td>
                     <a style="margin-right:8px;" class=" float-left btn btn-primary" href="{{route('course.show',$course->id)}}">
                     <i class="fas fa-eye"></i> 

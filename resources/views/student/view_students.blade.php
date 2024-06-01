@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ asset('dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <link rel="stylesheet" href="{{ asset('dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+
 @endpush
     <div class="content-header">
       <div class="container-fluid">
@@ -46,7 +47,7 @@
                     <th>Qualification</th>
                     <th>Photo</th>
                     <th>Course</th>
-                    <td>Action</td>
+                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -69,28 +70,40 @@
                         @endforeach
                   </td>
                  <td>
-                 <a style="margin-right:8px;" class=" float-left btn btn-primary" href="{{route('student.show',$student->id)}}">
+                  <div style="display:flex">
+                  
+                    <div>
+                    <a class="btn btn-primary mr-1" href="{{route('student.show',$student->id)}}">
                     <i class="fas fa-eye"></i> 
                     </a>
-                    @if($student->status == "enquiry" )
-                    <a style="margin-right:8px;" class="float-left btn btn-secondary" href="{{route('student.allocate',$student->id)}}">
-                    Allocate Batch
-                    </a>
-                    @endif
-
-                    @if($student->status == "enquiry" || $student->status == "allocated" )
-                    <a style="margin-right:8px;" class="float-left btn btn-warning" href="{{route('student.edit',$student->id)}}">
+                    </div>
+                  
+                    <a  class="btn btn-warning mr-1" style="height:fit-content" href="{{route('student.edit',$student->id)}}">
                     <i class="fas fa-edit"></i> 
                     </a>
-                    @endif
-                    
-                    <form class="float-left"  action="" method="post">
+                                   
+                    <form  action="{{route('student.destroy',$student->id)}}" method="post">
                       @csrf
                       @method('DELETE')
-                      <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger" >
+                      <button type="submit" onclick="return confirm('Are you sure ?')" class="btn btn-danger mr-1" >
                         <i class="fas fa-trash"></i> 
                       </button>
                     </form>
+                    @if($student->status == "enquiry" )
+                    <a onclick="find_batch('{{$x}}')" class=" btn btn-small btn-secondary" id="batch-{{$x}}" data-toggle="modal" data-target="#batch_add" style="display:flex">
+                    <span style="font-size:12px"><i class="fas fa-plus"></i> Batch</span>
+                    </a>
+                    <input type="hidden" name="courseid" id="course-{{$x}}" value="{{$student->course_id}}">
+                    <input type="hidden" name="studentid" id="student-{{$x}}" value="{{$student->id}}">
+                    @endif
+
+                    @if($student->batch_id)
+                    <a  class=" btn btn-small btn-success" style="display:flex">
+                    <span style="font-size:12px"><i class="fas fa-check"></i> Allocated</span>
+                    </a>
+                    @endif
+                 
+                  </div>
                  </td>
                 </tr>
                  @endforeach
@@ -102,6 +115,39 @@
     </div>
       
     </section>
+
+    <div class="modal fade" id="batch_add">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Allocate Batch</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form action="{{route('student.batched')}}" method="POST">
+              @csrf
+          
+            <div class="modal-body">
+            <div class="form-group">
+                    <label for="exampleInputPassword1">Select a batch</label>
+                    <select name="batch" id="batch" class="form-control" required>
+                          <option value=""> --select-- </option>                     
+                    </select>
+            </div>
+            </div>
+            <input type="hidden" name="student" id="student">
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Allocate</button>
+            </div>
+          </form>
+          </div>
+      
+        </div>
+
+      </div>
+
 
 @push('scripts')
 <script src="{{ asset('dashboard/plugins/datatables/jquery.dataTables.min.js') }}"></script>
@@ -117,6 +163,8 @@
 <script src="{{ asset('dashboard/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
 
+
+
 <script>
   $(function () {
     $("#example1").DataTable({
@@ -129,11 +177,44 @@
       "searching": false,
       "ordering": true,
       "info": true,
-      "autoWidth": false,
+      "autoWidth": true,
       "responsive": true,
     });
   });
 </script>
+
+<script>
+  function find_batch(x){
+    let course_id = $("#course-"+x).val();
+    let student_id = $("#student-"+x).val();
+
+    $("#batch").html('');
+      $.ajax({
+      type: "POST",
+      headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+               },
+      url: "{{route('student.findBatch')}}", 
+      data: {course_id:course_id},
+      success:function(response){
+        console.log(response);
+        if($.trim(response) != ''){
+          response.forEach(function (res) {
+          console.log(res.name);
+          $("#batch").append('<option value=' + res.id + '>' + res.name + '</option>');
+          $("#student").val(student_id);
+          });
+        }
+        else{
+          $("#batch").append('<option value="">No batches found</option>');
+        }
+
+      }  
+    });
+
+  }
+</script>
+
 @endpush    
 @endsection
 
