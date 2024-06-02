@@ -53,7 +53,7 @@
                     <div class="form-group">
                       <label for="exampleInputEmail1">Middle Name</label>
                       <input type="text" name="middlename" class="form-control" id="exampleInputEmail1" placeholder="Enter Middle name" >
-                      @error('firstname')
+                      @error('middlename')
                       <span style="color:red;font-weight:bold">{{$message}}</span>
                       @enderror
                     </div>
@@ -73,6 +73,9 @@
                     <div class="form-group">
                       <label for="exampleInputEmail1">Date Of Bitrh</label>
                       <input type="date" name="birthdate" class="form-control" id="exampleInputEmail1"  required>
+                      @error('birthdate')
+                    <span style="color:red;font-weight:bold">{{$message}}</span>
+                    @enderror
                     </div>
                   </div>
 
@@ -82,13 +85,16 @@
                 <div class="col-md-3">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Gender</label>
-                    <select name="qualification" class="form-control" id="exampleInputEmail1" required>
+                    <select name="gender" class="form-control" id="exampleInputEmail1" required>
                       <option value="">--Select--</option>
                       <option value="1">Male</option>
                       <option value="2">Female</option>
                       <option value="3">Transgender</option>
                       <option value="4">Do Not Want to reveal</option>
                     </select>
+                    @error('gender')
+                    <span style="color:red;font-weight:bold">{{$message}}</span>
+                    @enderror
                   </div>
                 </div> 
 
@@ -96,6 +102,9 @@
                   <div class="form-group">
                     <label for="exampleInputEmail1">Mobile</label>
                     <input type="tel" name="mobile" class="form-control" id="exampleInputEmail1" placeholder="Enter Mobile Number" required>
+                    @error('mobile')
+                    <span style="color:red;font-weight:bold">{{$message}}</span>
+                    @enderror
                   </div>
                   </div>
 
@@ -232,7 +241,7 @@
                               <tbody>
                               <tr>
                                 <td>
-                                  <select class="form-control department" name="departments[]" id="">
+                                  <select class="form-control department" name="departments[]" >
                                     <option value="">--Select--</option>
                                     @foreach ($uniqueDepartments as $department)
                                       <option value="{{$department->id}}"> {{$department->name}} </option>
@@ -240,7 +249,7 @@
                                   </select>
                                 </td>
                                 <td>
-                                  <select class="form-control course" name="courses[]" id="">
+                                  <select class="form-control course" name="courses[]">
                                     <option value="">--Select--</option>
                                   </select>
                                 </td>
@@ -254,7 +263,48 @@
                         </table>
                     </div>
                     <div class="col-md-2">
-                    <button id="addRowBtn" class="btn btn-info"><i class="fas fa-plus"></i> </button>
+                    <button id="addRowBtn" type="button" class="btn btn-info"><i class="fas fa-plus"></i> </button>
+                    </div>
+                  </div>
+
+                  <div class="row" style="margin:15px 0 0 0">
+                    <div class="col-md-12">
+                    <label for="exampleInputEmail1">References (if Any) </label>
+                    </div>
+                    <div class="col-md-10">
+                        <table id="references" class="table table-bordered table-striped">
+                            <thead>
+                              <tr>
+                              <th>Referenced Person</th>
+                              <th>Relationship to the reference</th>
+                              <th>Reference Contact Number	</th>
+                              <th>Action</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr>
+                                <td>
+                                  <input type="text" class="form-control" name="referenced_person[]" id="">
+                                </td>
+                                <td>
+                                <input type="text" class="form-control" name="relationship[]" id="">
+                                </td>
+                                <td>
+                                <input type="text" class="form-control" name="referencecontact[]" id="">
+                               </td>
+                              </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-2">
+                    <button id="addRowBtn2" type="button" class="btn btn-info"><i class="fas fa-plus"></i> </button>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                    <label for="exampleInputEmail1">Comments </label>
+                      <textarea class="form-control" name="comments" id=""></textarea>
                     </div>
                   </div>
   
@@ -408,7 +458,37 @@ $(document).ready(function() {
     });
     })
 
+    $('#addRowBtn2').click(function() {
+      $('input[required], select[required]').prop('disabled', true);
+      var newRow = '<tr>' +
+                        '<td>' +
+                            '<input type="text" class="form-control" name="referenced_person[]" id="">' +
+                        '</td>' +
+                        '<td>' +
+                            '<input type="text" class="form-control" name="relationship[]" id="">' +
+                        '</td>' +
+                        '<td>' +
+                            '<input type="text" class="form-control" name="referencecontact[]" id="">' +
+                        '</td>' +
+                        '<td>' +
+                            '<button class="btn btn-danger removeRowBtn2"><i class="fas fa-trash"></i></button>' +
+                        '</td>' +
 
+                    '</tr>';
+    $('#references tbody').append(newRow);
+
+    setTimeout(function(){
+            $('input[required], select[required]').prop('disabled', false);
+        }, 100);
+
+        setTimeout(function(){
+            $('#addRowBtn2').focus();
+        }, 200); 
+    
+    })
+    $('#references').on('click', '.removeRowBtn2', function() {
+        $(this).closest('tr').remove();
+    });
 
 
   })

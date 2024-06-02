@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\Batch;
 use App\Models\Department;
 use Illuminate\Support\Facades\File;
+use App\Http\Requests\CreateStudentRequest;
 
 class StudentController extends Controller
 {
@@ -37,70 +38,77 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateStudentRequest $request)
     {
-        //
+       // dd($request->departments);
         $student = new Student;
         $student->firstname = $request->firstname;
+        $student->middlename = $request->middlename;
         $student->lastname = $request->lastname;
+        $student->birthdate = $request->birthdate;
+        $student->gender = $request->gender;
+
         $student->address = $request->address;
         $student->mobile = $request->mobile;
+        $student->telephone = $request->telephone;
         $student->email = $request->email;
         $student->qualification = $request->qualification;
-       
 
-        if($request->status == 0){
+        $student->guardianname = $request->guardianname;
+        $student->relationshiptoguardian = $request->relationshiptoguardian;
+        $student->guardiantelephone = $request->guardiantelephone;
+        $student->State = $request->state;
+        $student->city = $request->city;
+
+        $student->zipcode = $request->zipcode;
+        $student->aadhar_number = $request->aadhar_number;
+        $student->departments = serialize($request->departments);
+        $student->courses = serialize($request->courses);
+        $student->referenced_person = serialize($request->referenced_person);
+
+        $student->relationship = serialize($request->relationship);
+        $student->referencecontact = serialize($request->referencecontact);
+        $student->comments = $request->comments;
+
+        
+        $aadharphoto = '';
+            if ($aadhar = $request->file('aadhar_photo')){
+            $aadharphoto = time().'-'.uniqid().'.'.$aadhar->getClientOriginalExtension();
+            $aadhar->move('uploads/images/aadhar', $aadharphoto);
+            }
+
+            $studentphoto = '';
+            if ($students = $request->file('student_photo')){
+            $studentphoto = time().'-'.uniqid().'.'.$students->getClientOriginalExtension();
+            $students->move('uploads/images/students', $studentphoto);
+            }
+
+            $sslcphoto = '';
+            if ($sslc = $request->file('sslc_photo')){
+            $sslcphoto = time().'-'.uniqid().'.'.$sslc->getClientOriginalExtension();
+            $sslc->move('uploads/images/sslc', $sslcphoto);
+            }
+
+            $plustwophoto = '';
+            if ($plustwo = $request->file('plustwo_photo')){
+            $plustwophoto = time().'-'.uniqid().'.'.$plustwo->getClientOriginalExtension();
+            $plustwo->move('uploads/images/plustwo', $plustwophoto);
+            }
+
+            $student->aadhar_photo = $aadharphoto;
+            $student->student_photo = $studentphoto;
+            $student->sslc_certificate = $sslcphoto;
+            $student->plustwo_certificate = $plustwophoto;
+
+      
             if($student->save()){
-                return redirect()->route('student.create')->with('status','Student Successfully Added');
+                return redirect()->route('student.create')->with('success','Student Successfully Added');
             }
             else{
-                return redirect()->route('student.create')->with('status','Operation failed');
+                return redirect()->route('student.create')->with('error','Operation error');
             }
-        }
-        else{
-          
-                $aadharphoto = '';
-                if ($aadhar = $request->file('aadhar_photo')){
-                $aadharphoto = time().'-'.uniqid().'.'.$aadhar->getClientOriginalExtension();
-                $aadhar->move('uploads/images/aadhar', $aadharphoto);
-                }
+        
 
-                $studentphoto = '';
-                if ($students = $request->file('student_photo')){
-                $studentphoto = time().'-'.uniqid().'.'.$students->getClientOriginalExtension();
-                $students->move('uploads/images/students', $studentphoto);
-                }
-
-                $sslcphoto = '';
-                if ($sslc = $request->file('sslc_photo')){
-                $sslcphoto = time().'-'.uniqid().'.'.$sslc->getClientOriginalExtension();
-                $sslc->move('uploads/images/sslc', $sslcphoto);
-                }
-
-                $plustwophoto = '';
-                if ($plustwo = $request->file('plustwo_photo')){
-                $plustwophoto = time().'-'.uniqid().'.'.$plustwo->getClientOriginalExtension();
-                $plustwo->move('uploads/images/plustwo', $plustwophoto);
-                }
-
-                $student->status = "enquiry";
-                $student->aadhar_number = $request->aadhar_number;
-                $student->aadhar_photo = $aadharphoto;
-                $student->student_photo = $studentphoto;
-                $student->sslc_certificate = $sslcphoto;
-                $student->plustwo_certificate = $plustwophoto;
-
-                $student->course_id = $request->course;
-                $student->created_by = auth()->user()->id;
-
-                if($student->save()){
-                    return redirect()->route('student.create')->with('status','Student Successfully Added');
-                }
-                else{
-                    return redirect()->route('student.create')->with('status','Operation failed');
-                }
-
-        }
     }
 
     /**
@@ -111,7 +119,9 @@ class StudentController extends Controller
         //
         $courses = Course::all();
         $student = Student::find($id);
-        return view('student.show_student',compact('courses','student'));
+        $departments = Department::all();
+        $uniqueDepartments = $departments->unique('name');
+        return view('student.show_student',compact('courses','student','departments','uniqueDepartments'));
         
     }
 

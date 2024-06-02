@@ -32,8 +32,11 @@ return new class extends Migration
             $table->string('zipcode');
             $table->enum('status', ['visit', 'enquiry','allocated'])->default('visit');
 
-            $table->longText('coursesopted');
-            $table->longText('references');
+            $table->longText('courses');
+            $table->longText('departments');
+            $table->longText('referenced_person');
+            $table->longText('relationship');
+            $table->longText('referencecontact');
             $table->longText('comments');
             
             $table->longText('aadhar_number')->nullable();
