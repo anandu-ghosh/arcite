@@ -42,7 +42,7 @@ class StaffController extends Controller
             'name' => 'required',
             'address' => 'required',
             'email' => 'required',
-            'mobile' => 'required',
+            'mobile' => 'required|digits_between:10,15',
             'institution' =>'required'
         ]);
 
