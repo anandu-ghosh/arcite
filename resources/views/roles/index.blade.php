@@ -38,7 +38,7 @@
                   <tr>
                     <th>Slno</th>
                     <th>Roles</th>
-                    <td>Action</td>
+                    <!-- <td>Action</td> -->
                   </tr>
                   </thead>
                   <tbody>
@@ -48,7 +48,7 @@
                   <td>{{$x++}}</td>
                   <td>{{$role->role_name}}</td>
                   @endforeach
-                  <td>
+                  <!-- <td>
                     <a style="margin-right:8px;" class=" float-left btn btn-primary" href="">
                     <i class="fas fa-eye"></i> 
                     </a>
@@ -62,7 +62,7 @@
                         <i class="fas fa-trash"></i> 
                       </button>
                     </form>
-                    </td>
+                    </td> -->
                 </tr>
                   </tbody>
                 </table>

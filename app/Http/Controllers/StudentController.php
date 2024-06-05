@@ -9,6 +9,7 @@ use App\Models\Batch;
 use App\Models\Department;
 use Illuminate\Support\Facades\File;
 use App\Http\Requests\CreateStudentRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StudentController extends Controller
 {
@@ -69,6 +70,7 @@ class StudentController extends Controller
         $student->relationship = serialize($request->relationship);
         $student->referencecontact = serialize($request->referencecontact);
         $student->comments = $request->comments;
+        $student->created_by = Auth::user()->id;
 
         
         $aadharphoto = '';

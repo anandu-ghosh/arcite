@@ -40,6 +40,7 @@
                   <tr>
                     <th>Slno</th>
                     <th>Staff Name</th>
+                    <th>Role</th>
                     <th>Address</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -53,6 +54,7 @@
                   <tr>
                     <td>{{$x++}}</td>
                     <td>{{$staff->name}}</td>
+                    <td>{{$staff->role_name}}</td>
                     <td>{{$staff->address}}</td>
                     <td>{{$staff->email}}</td>
                     <td>{{$staff->phone}}</td>

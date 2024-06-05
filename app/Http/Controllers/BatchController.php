@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Department;
 use App\Models\Institution;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BatchController extends Controller
 {
@@ -17,7 +18,15 @@ class BatchController extends Controller
     {
         //
         $courses = Course::all();
-        $batches = Batch::all();
+       // $batches = Batch::all();
+       $batches = DB::select('
+       SELECT batches.*, courses.name AS course_name, departments.name AS department_name, institution.name AS institution_name
+       FROM batches
+       INNER JOIN courses ON batches.course_id = courses.id
+       INNER JOIN departments ON courses.department_id = departments.id
+       INNER JOIN institution ON departments.institution_id = institution.id
+   ');
+       
         return view('batch.view_batches',compact('batches','courses'));
     }
 
@@ -112,10 +121,10 @@ class BatchController extends Controller
         //
         $batch = Batch::find($id);
         if($batch->delete()){
-            return redirect()->route('batch.index')->with('status','Batch Successfully Deleted');
+            return redirect()->route('batch.index')->with('success','Batch Successfully Deleted');
         }
         else{
-            return redirect()->route('batch.index')->with('status','Failed');
+            return redirect()->route('batch.index')->with('error','Failed');
         }
     }
 }

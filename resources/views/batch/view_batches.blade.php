@@ -53,9 +53,9 @@
                  <tr>
                     <td>{{$x++}}</td>
                     <td>{{$batch->name}}</td>
-                    <td>{{$batch->course->name}}</td>
-                    <td>{{$batch->department->name}}</td>
-                    <td>{{$batch->institution->name}}</td>
+                    <td>{{$batch->course_name}}</td>
+                    <td>{{$batch->department_name}}</td>
+                    <td>{{$batch->institution_name}}</td>
                     <td>{{$batch->whattsapp_link}}</td>
                     <td>
                     <a style="margin-right:8px;" class=" float-left btn btn-primary" href="{{route('batch.show',$batch->id)}}">

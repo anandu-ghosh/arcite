@@ -28,6 +28,7 @@
     <div class="container-fluid">
         <div class="row">
         <div class="col-md-6">
+  
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
@@ -53,6 +54,18 @@
                     @error('name')
                     <span style="color:red;font-weight:bold">{{$message}}</span>
                     @enderror
+                  </div>
+                  @php
+                      $roles = \App\Helpers\Helper::roles();
+                  @endphp
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Role</label>
+                    <select name="roles" class="form-control" required>
+                          <option value=""> --select--
+                          @foreach($roles as $role)
+                          <option value="{{$role->id}}">{{$role->role_name}}</option>
+                          @endforeach
+                    </select>
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Address</label>

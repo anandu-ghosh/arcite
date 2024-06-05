@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use DB;
 
 class StaffController extends Controller
 {
@@ -17,7 +18,10 @@ class StaffController extends Controller
     public function index()
     {
         //
-        $staffs = Staff::all();
+        $staffs = DB::table('staffs')
+        ->join('roles', 'staffs.role_id', '=', 'roles.id')
+        ->select('staffs.*', 'roles.*')
+        ->get();
         $institutions = Institution::all();
         return view('staff.view_staff',compact('staffs','institutions'));
     }
@@ -42,13 +46,13 @@ class StaffController extends Controller
             'name' => 'required',
             'address' => 'required',
             'email' => 'required',
-            'mobile' => 'required|digits_between:10,15',
+            'mobile' => 'required',
             'institution' =>'required'
         ]);
 
         $user = new User;
         $user->name = $request->name;
-        $user->role_id = 2;
+        $user->role_id = $request->roles;
         $user->email = $request->email;
         $password = "";
         $password = $request->name.substr($request->mobile , -5);
@@ -59,6 +63,7 @@ class StaffController extends Controller
         if($user->save()){
             $staff = new Staff;
             $staff->user_id = $user->id;
+            $staff->role_id = $request->roles;
             $staff->institution_id = $request->institution;
             $staff->name = $request->name;
             $staff->address = $request->address;
@@ -68,14 +73,14 @@ class StaffController extends Controller
             
             $staff->created_by = auth()->user()->id;
             if($staff->save()){
-                return redirect()->route('staff.create')->with('status','Staff Successfully Added');
+                return redirect()->route('staff.create')->with('success','Staff Successfully Added');
             }
             else{
-                return redirect()->route('staff.create')->with('status','Staff cant add');
+                return redirect()->route('staff.create')->with('success','Staff cant add');
             }
         }
         else{
-            return redirect()->route('staff.create')->with('status','Staff cant add');
+            return redirect()->route('staff.create')->with('success','Staff cant add');
         }
     }
 
