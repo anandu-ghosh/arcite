@@ -29,17 +29,6 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{URL::to('fees')}}" class="nav-link">
-              <i class="nav-icon fas fa-money-bill"></i>
-              <p>
-                Fees
-              </p>
-            </a>
-          </li>
-          @if (Auth::check())
-          @if (Auth::user()->role_id==1)
-
-          <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
               <p>
@@ -82,10 +71,6 @@
              
             </ul>
           </li>
-
-          @endif
-          @endif
-          
           <!-- <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-chart-pie"></i>

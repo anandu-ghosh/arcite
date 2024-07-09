@@ -55,24 +55,9 @@ class StudentController extends Controller
     public function create()
     {
         //
-        $user = Auth::user();
-        if ($user) {
-        $role = $user->role_id;
-        }
-        if($role == 1){
-
-            $institutions  = Institution::all();
-        }
-        else{
-            $staff = Staff::where('user_id',$user->id)->first();
-            $institutions  = Institution::where('id',$staff->institution_id)->get();
-           
-        }
-    
         $courses = Course::all();
         $departments = Department::all();
-        //$institutions  = Institution::all();
-       // dd($institutions);
+        $institutions  = Institution::all();
         $uniqueDepartments = $departments->unique('name');
         return view('student.add_student',compact('courses','uniqueDepartments','institutions'));
     }
@@ -153,14 +138,6 @@ class StudentController extends Controller
                     'amount' => $request->current_amount,
                 ]);
                 if($studentfee){
-
-                    // $mail = Mail::to($request->email)->send(new AdmissionMail());
-                    // if($mail){
-                    //     return redirect()->route('student.create')->with('success','Student Successfully Added . Mail sent');
-                    // }
-                    // else{
-                    //     return redirect()->route('student.create')->with('error','Mail error');
-                    // }
                     return redirect()->route('student.create')->with('success','Student Successfully Added');
                 }
                 else{
@@ -355,7 +332,7 @@ class StudentController extends Controller
     }
 
     public function sendMail(){
-        $mail = Mail::to('abcd@gmail.com')->send(new AdmissionMail());
-       
+        $mail = Mail::to('rajcep0018@gmail.com')->send(new AdmissionMail());
+        dd($mail);
     }
 }

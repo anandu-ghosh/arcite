@@ -11,12 +11,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Student</h1>
+            <h1 class="m-0">Fees</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{route('home.index')}}">Home</a></li>
-              <li class="breadcrumb-item active">Student</li>
+              <li class="breadcrumb-item active">Fees</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -31,9 +31,8 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Student</h3>
-                  
-                <a class="btn btn-primary float-right" href="{{route('student.create')}}" >Add Student</a>
+                <h3 class="card-title">Student List</h3>
+              
               </div>
                 <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
@@ -41,73 +40,47 @@
                   <tr>
                     <th>Slno</th>
                     <th>Student Name</th>
-                    <th>Address</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Qualification</th>
-                    <th>Photo</th>
-                    <th>Course</th>
+                    <th>Courses</th>
+                    <th>Total Fees</th>
+                    <th>Paid Fees</th>
                     <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
-                    @php($x=1)
-                 @foreach($students as $student)
-                 <td>{{$x++}}</td>
-                 <td>{{$student->firstname}}&nbsp;&nbsp;{{$student->lastname}}</td>
-                 <td>{{$student->address}}</td>
-                 <td>{{$student->email}}</td>
-                 <td>{{$student->mobile}}</td>
-                 <td>{{$student->qualification}}</td>
+                  @foreach($student_fees as $student_fee)
+                               
+                 <tr>
+                 <td>{{ $loop->iteration }}</td>
+                 <td>{{$student_fee->firstname}}&nbsp;&nbsp;{{$student_fee->middlename}}&nbsp;&nbsp;{{$student_fee->lastname}}</td>
+                 <td>{{$student_fee->email}}</td>
+                 <td>{{$student_fee->mobile}}</td>
                  <td>
-                  @if($student->student_photo)
-                  <img src="{{asset('uploads/images/students/'.$student->student_photo)}}" style="width:80px;height:75px" alt=""></td>
-                  @endif
-                 <td>@foreach($courses as $course)
-                        @if($student->course_id == $course->id)
-                        {{$course->name}}
-                        @endif
-                        @endforeach
+                  @foreach ($student_fee->courseNames() as $courseName )
+                  {{ $courseName }} <br>
+                  @endforeach
                   </td>
-                 <td>
-                  <div style="display:flex">
+                  <td> @php
+                          $fees = unserialize($student_fee->fees);
+                          $sum = array_sum($fees);
+                          $balance = $sum - $student_fee->total_fees_paid;
+                          $balance_double = (double)$balance;
+                          echo $sum;
+                       @endphp</td>
+                  <td>{{ $student_fee->total_fees_paid }}</td>
+                  <td>
+                  @if($balance>0)
+                    <button class="btn btn-small btn-success pay-button" type="button" data-balance="{{ $balance_double }}" data-student="{{ $student_fee->id }}" data-toggle="modal" data-target="#paymentModal"><i class="fas fa-wallet"></i> Pay</button>
                   
-                    <div>
-                    <!-- <a class="btn btn-primary mr-1" href="{{route('student.show',$student->id)}}">
-                    <i class="fas fa-eye"></i> 
-                    </a> -->
-                    </div>
-                  
-                    <a  class="btn btn-warning mr-1" style="height:fit-content" href="{{route('student.edit',$student->id)}}">
-                    <i class="fas fa-edit"></i> 
-                    </a>
-                                   
-                    <form  action="{{route('student.destroy',$student->id)}}" method="post">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" onclick="return confirm('Are you sure ?')" class="btn btn-danger mr-1" >
-                        <i class="fas fa-trash"></i> 
-                      </button>
-                    </form>
-                    @if($student->status == "enquiry" )
-                    <a onclick="find_batch('{{$x}}')" class=" btn btn-small btn-secondary" id="batch-{{$x}}" data-toggle="modal" data-target="#batch_add" style="display:flex">
-                    <span style="font-size:12px"><i class="fas fa-plus"></i> Batch</span>
-                    </a>
-                    <input type="hidden" name="courseid" id="course-{{$x}}" value="{{$student->course_id}}">
-                    <input type="hidden" name="studentid" id="student-{{$x}}" value="{{$student->id}}">
-                    @endif
-
-                    @if($student->batch_id)
-                    <a  class=" btn btn-small btn-success" style="display:flex">
-                    <span style="font-size:12px"><i class="fas fa-check"></i> Allocated</span>
-                    </a>
-                    @endif
+                  @else
+                    <button class="btn btn-small btn-warning" disabled ><i class="fas fa-check"></i> Paid</button>
+                  @endif
+                  </td>
                  
-                  </div>
-                 </td>
-                </tr>
+                 </tr>
                  @endforeach
-                  </tbody>
+                </tbody>
                 </table>
                 </div>
             </div>
@@ -116,37 +89,34 @@
       
     </section>
 
-    <div class="modal fade" id="batch_add">
-        <div class="modal-dialog">
-          <div class="modal-content">
+    <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title">Allocate Batch</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+                <h6 class="modal-title" id="paymentModalLabel">Balance amount to pay -  <span style="color:red" id="balanceDisplay"></span> </h6>
+               
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <form action="{{route('student.batched')}}" method="POST">
+            <form action="{{route('fees.store')}}" method="POST">
               @csrf
-          
-            <div class="modal-body">
-            <div class="form-group">
-                    <label for="exampleInputPassword1">Select a batch</label>
-                    <select name="batch" id="batch" class="form-control" required>
-                          <option value=""> --select-- </option>                     
-                    </select>
-            </div>
-            </div>
-            <input type="hidden" name="student" id="student">
-            <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Allocate</button>
-            </div>
-          </form>
-          </div>
-      
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label for="">Enter the amount to pay</label>
+                      <input type="text" name="amount" class="form-control" placeholder="amount">
+                      <input type="hidden" name="student_id" id="student_id"> 
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-wallet"></i> Pay</button>
+                </div>
+            </form>
+            
         </div>
-
-      </div>
+    </div>
+</div>
 
 
 @push('scripts')
@@ -169,7 +139,7 @@
   $(function () {
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["pdf", "colvis"]
+      "buttons": []
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example2').DataTable({
       "paging": true,
@@ -184,6 +154,22 @@
 </script>
 
 <script>
+    $(document).ready(function() {
+        $('.pay-button').click(function() {
+            // Retrieve balance from data attribute
+            var balance = $(this).data('balance');
+            var student_id = $(this).data('student');
+            
+            // Display balance in modal body
+            $('#balanceDisplay').text(balance+' rupees');
+            $('#student_id').val(student_id);
+            // Show the modal
+            $('#paymentModal').modal('show');
+        });
+    });
+</script>
+
+<!-- <script>
   function find_batch(x){
     let course_id = $("#course-"+x).val();
     let student_id = $("#student-"+x).val();
@@ -213,7 +199,7 @@
     });
 
   }
-</script>
+</script> -->
 
 @endpush    
 @endsection

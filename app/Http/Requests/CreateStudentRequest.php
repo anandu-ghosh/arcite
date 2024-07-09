@@ -33,6 +33,7 @@ class CreateStudentRequest extends FormRequest
             'guardianname' => 'required|string|max:255',
             'relationshiptoguardian' => 'required|string|max:255',
             'guardiantelephone' => 'required|string|max:255',
+            'current_amount' => 'required|string|max:255',
             'state' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'zipcode' => 'required|string|max:255',

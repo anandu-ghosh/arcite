@@ -5,7 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BatchController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\FeesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\InstitutionController;
@@ -41,10 +40,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('department',DepartmentController::class);
     Route::post('/departments',[DepartmentController::class,'departments'])->name('departments');
-
     Route::get('/mail',[StudentController::class,'sendMail']);
-    Route::resource('/fees',FeesController::class);
-   
-
     
 });    
