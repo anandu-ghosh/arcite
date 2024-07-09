@@ -3,6 +3,7 @@
 namespace App\Helpers;
 use DB;
 use Auth;
+use Carbon\Carbon;
 
 class Helper
 {
@@ -38,7 +39,7 @@ class Helper
             ->sum('amount');
         }else{
             $office_id = DB::table('staffs')->where('user_id',Auth::user()['id'])->value('institution_id');
-            return DB::table('students')->join('student_fees', 'students.id', '=', 'student_fees.student_id')->where('students.institution_id',$office_id)->whereDate('student_fees.created_at', Carbon::today())->sum('student_fees.fee_amount');
+            return DB::table('students')->join('student_fees', 'students.id', '=', 'student_fees.student_id')->where('students.institution_id',$office_id)->whereDate('student_fees.created_at', Carbon::today())->sum('student_fees.amount');
         }
     }
 }
