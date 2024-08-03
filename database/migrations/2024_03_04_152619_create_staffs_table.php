@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('staffs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('user_id')->references('id')->on('users');
-            $table->foreignId('institution_id')->references('id')->on('institution');
+            $table->foreignId('institution_id')->references('id')->on('institutions');
             $table->string('name');
             $table->string('address');
             $table->string('email');

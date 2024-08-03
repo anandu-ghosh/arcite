@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('batches', function (Blueprint $table){
+        Schema::create('batches', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('institution_id')->references('id')->on('institution');
-            $table->foreignId('course_id')->references('id')->on('courses');
-            $table->foreignId('department_id')->references('id')->on('departments');
+            $table->foreignId('course_id')->references('id')->on('courses')->onDelete('cascade');
             $table->string('name');
             $table->longText('whattsapp_link');
             $table->bigInteger('created_by')->nullable();

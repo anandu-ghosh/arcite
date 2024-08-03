@@ -16,11 +16,11 @@ class UsersTableSeeder extends Seeder
     {
         // date_default_timezone_set('Asia/Kolkata');
         DB::table('users')->insert([
-            'name' => 'Jayan',
+            'name' => 'Admin',
             'role_id' => 1,
             'email' => 'admin@gmail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('admin123'),
+            'password' => bcrypt('password'),
             'remember_token' => Str::random(10),
             'status' => 'active',
             'created_at' => now(),
